@@ -1,0 +1,82 @@
+[project]
+name = "library-rag-ingester"
+version = "0.0.0"
+description = "Indexes the PDX Hackerspace library catalog in Qdrant for RAG."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "John Romkey" }]
+# Keep in step with .python-version and the Dockerfile's python image.
+requires-python = ">=3.15"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.15",
+]
+dependencies = [
+  # The library catalog feed and the OpenAI-compatible embeddings API.
+  "httpx>=0.28.1",
+  # Vector store.
+  "qdrant-client>=1.20.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/romkey/library-rag-ingester"
+Changelog = "https://github.com/romkey/library-rag-ingester/blob/main/CHANGELOG.md"
+Issues = "https://github.com/romkey/library-rag-ingester/issues"
+
+[project.scripts]
+library-rag-ingester = "library_rag_ingester.__main__:main"
+
+[dependency-groups]
+dev = [
+  "mypy>=2.4.0",
+  "pytest>=9.1.1",
+  "pytest-cov>=7.1.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.ruff.lint]
+select = [
+  "E", "W", "F",  # pycodestyle, pyflakes
+  "I",            # import order
+  "N",            # naming
+  "UP",           # modern syntax for requires-python
+  "B",            # likely bugs
+  "S",            # security
+  "C4", "SIM", "RET", "PTH",
+  "DTZ",          # timezone-aware datetimes
+  "T20",          # no print(); use logging
+  "LOG", "G",     # logging calls
+  "PT",           # pytest style
+  "RUF",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]  # assert is how pytest works
+"scripts/**" = ["T20"]  # command-line tools print
+
+[tool.mypy]
+strict = true
+files = ["src", "tests", "scripts"]
+
+[tool.pytest.ini_options]
+addopts = ["--cov", "--cov-report=term-missing", "--strict-markers"]
+testpaths = ["tests"]
+xfail_strict = true
+filterwarnings = [
+  "error",
+  # Tests use qdrant-client's in-memory mode, which ignores payload indexes.
+  "ignore:Payload indexes have no effect in the local Qdrant:UserWarning",
+]
+
+[tool.coverage.run]
+source = ["library_rag_ingester"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 90
+skip_covered = true
+exclude_also = ['if __name__ == "__main__":', 'raise AssertionError\("unreachable"\)']
