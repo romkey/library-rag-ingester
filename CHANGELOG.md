@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- The release workflow no longer fails saving the Docker build cache when
+  a merged release PR starts it.
+
 ## [0.1.0] - 2026-11-13
 
 ### Added
