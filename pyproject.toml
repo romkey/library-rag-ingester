@@ -1,6 +1,6 @@
 [project]
 name = "library-rag-ingester"
-version = "0.0.0"
+version = "0.1.0"
 description = "Indexes the PDX Hackerspace library catalog in Qdrant for RAG."
 readme = "README.md"
 license = "MIT"
